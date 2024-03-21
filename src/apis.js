@@ -15,4 +15,11 @@ app.use("/",router.get("/sobre", (req, res, next)=> {
         "autor":"Augusto F."
     })
 }));
+
+app.use("/salas",router.get("/salas", (req,res, next)=>{
+    const salaControllers = require("./controllers/salaControllers");
+    let resp=salaControllers.get();
+    res.status(200).send(resp);
+}));
+
 module.exports=app;
