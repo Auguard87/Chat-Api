@@ -1,26 +1,14 @@
-const jwt = require('jsonwebtoken');
-
-const checktoken = async(token, id, key) => {
-    try{
-        let decoded = await jwt.verify(token,key);
-        if(decoded){
-            if(decoded.id==id) return true;
-        }
-        return false;
-    }catch(e){
-        return false;
-    }
+const db = require("./db");
+async function registrarUsuario(nick) {
+    return await db.insertOne("usuario",{"nick":nick});
 };
 
-const setToken = async (id, key)=>{
-    console.log(id);
-    if(id){
-    return jwt.sign ({id}, key, {expiresIn: 28800});
-}
-return false;
-};
-
-module.exports = {
-    checktoken,
-    setToken,
-};
+let buscarUsuario = async (idUser)=>{
+    let user = await db.findOne("usuarios",idUser);
+    return user;
+  }
+  
+  
+  let alterarUsuario = async (user)=>{
+    return await db.updateOne("usuarios", user,{_id:user._id});
+  }
