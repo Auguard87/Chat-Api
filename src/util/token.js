@@ -1,17 +1,11 @@
-const jwt = require('jsonwebtoken');
-const checktoken = async (token, id, key) => jwt.verify(token, key, (err, decoded) => {
-    //completar
-});
+const token = require ("../util/token");
+const usuarioModel = require("../models/usuarioModel");
 
-const setToken = async (id, key) => {
-    console.log(id);
-    if (id) {
-        return jwt.sign({id}, key, { expiresIn: 28800 });
+exports.entrar=async(nick)=>{
+    let resp = await usuarioModel.registrarUsuario(nick);
+    if(resp.insertedId){
+        return {"idUser":resp.inserted,
+        "token": await token.setToken(JSON.stringify(resp.insertedId).replace(/"/g,''),nick),
+        "nick":nick}
     }
-    return false;
-};
-
-module.exports = {
-    checktoken,
-    setToken,
-};
+}
