@@ -9,3 +9,8 @@ exports.entrar=async(nick)=>{
         "nick":nick}
     }
 }
+exports.sair=async(idUser)=>{
+    user = usuarioModel.buscarUsuario(idUser)
+    usuarioModel.apagaUsuario(user);
+    return {"status":200, "msg":"ok"}
+}

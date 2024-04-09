@@ -1,29 +1,20 @@
-const token = require ("../util/token");
-const usuarioModel = require("../models/usuarioModel");
+const jwt = require("jsonwebtoken");
 
-const jwt = require('jsonwebtoken');
-
-const checktoken = async(token, id, key) => {
-    try{
-        let decoded = await jwt.verify(token,key);
-        if(decoded){
-            if(decoded.id==id) return true;
-        }
-        return false;
-    }catch(e){
-        return false;
-    }
-};
-
-const setToken = async (id, key)=>{
-    console.log(id);
+const setToken = async (id,key) =>{
     if(id){
-    return jwt.sign ({id}, key, {expiresIn: 28800});
+        token = jwt.sign({id}, key ,{expiresIn: 28800})
+        return token;
+    }
+    return false;
 }
-return false;
+
+const checkToken = async (token, id, key) => {
+    const tokenCheck = jwt.verify(token, key);
+    return tokenCheck;
 };
 
-module.exports = {
-    checktoken,
-    setToken,
-};
+module.exports={
+    checkToken,
+    setToken
+
+}

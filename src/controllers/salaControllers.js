@@ -37,3 +37,19 @@ exports.buscarMensagens = async (idsala, timestamp)=>{
     "msgs":mensagens
   };
 } 
+
+exports.sairSala = async (iduser, _id) =>{
+  const sair = await salaModel.sairSala("usuarios", iduser);
+  if(sair){
+      return {"status":200, "msg":"ok"};
+  }return {"msg":"Erro"};
+
+}
+
+exports.criarSala = async (data)=>{
+const sala = await salaModel.registrarSala(data)
+if(sala){
+  return {"status":200, "msg":"ok"};
+}
+return {"msg":"erro"}
+}

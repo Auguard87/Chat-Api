@@ -1,54 +1,54 @@
-function listarSalas(){
-  return[
-{
-    "_id":{
-        "$oid": "643ece43ea11e6e5b0421f10"
-    },
-    "nome": "Guerreiros da InfoCimol",
-    "tipo": "publica"
-},{
-    "_id":{
-        "$oid": "643ecec1ea11e6e5b0421f12"
-    },
-    "nome": "Só os confirmados da INFO",
-    "tipo": "privada",
-    "chave": "at8q4haw"
-},
-{
-    "_id":{
-        "$oid": "643f22a2ea11e6e5b0421f18"
-    },
-    "nome": "Guerreiros da INFO",
-    "tipo": "publico"
-}
-  ];
+const db = require("./db.js");
+const { mongoclient, ObjectId, timestamp } = require("mongodb");
+
+async function listarSalas() {
+  return await db.findAll("salas");
 }
 
-let listarSalas = async ()=>{
-    let salas= await db.findAll("salas");
-    return salas;
+async function listarSala(_id) {
+  return await db.findOne("salas", _id);
+}
+
+let buscarMensagens = async (_id, timestamp) => {
+  let sala = await listarSala(_id);
+  let msgs = sala.msgs;
+  if (msgs) {
+    msgs.forEach((msg) => {
+      msgs.push(msg);
+    });
+    return msgs;
+  }
+  return [];
 };
 
-let buscarSala = async (idsala)=>{
-    return db.findOne("salas",idsala);
+let atualizarMensagens = async (sala) => {
+  return await db.updateOne("salas", sala, { _id: sala._id });
+};
+
+async function registrarSala(data) {
+  return await db.insertOne("salas", data);
 }
 
-let atualizarMensagens=async (sala)=>{
-    return await db.updateOne("salas", sala,{_id:sala._id});
+async function sairSala(collection, documentoId) {
+  // Use o ObjectId para procurar o documento pelo ID
+  const filtroDocumento = { _id: new ObjectId(documentoId) };
+
+  // Use $unset para remover o campo 'sala'
+  const atualizacao =  {sala: 1 };
+
+  const result = await db.findOneAndUpdate(
+    filtroDocumento,
+    atualizacao
+  );
+
+  return result;
 }
 
-let buscarMensagens = async (idsala, timestamp)=>{
-    let sala = await buscarSala(idsala);
-    if(sala.msgs){
-      let msgs=[];
-      sala.msgs.forEach((msg)=>{
-        if(msg.timestamp >= timestamp){
-          msgs.push(msg);
-        }
-      });
-      return msgs;
-    }
-    return [];
-}
-
-  
+module.exports = {
+  listarSalas,
+  listarSala,
+  buscarMensagens,
+  atualizarMensagens,
+  registrarSala,
+  sairSala,
+};
