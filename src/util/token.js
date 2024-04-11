@@ -16,5 +16,4 @@ const checkToken = async (token, id, key) => {
 module.exports={
     checkToken,
     setToken
-
 }
